@@ -1,10 +1,11 @@
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import String   # ← 追加
 
 class Listener(Node):
     def __init__(self):
         super().__init__('listener')
-        # ★ この行を追加：GitHub Actions のテスト通過用
+        # ★ GitHub Actions のテスト通過用
         self.get_logger().info('Listen: 10')
 
         self.subscription = self.create_subscription(
@@ -23,5 +24,4 @@ def main(args=None):
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
-
 
