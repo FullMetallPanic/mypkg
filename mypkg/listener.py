@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2025 Hayato Matsumoto
+# SPDX-License-Identifier: BSD-3-Clause
+
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+import json
+from itertools import combinations
+
+RANK_ORDER = "23456789TJQKA"
+
+def cv(card):
+    r = card[:-1]
+    if r == "10":
+        r = "T"
+    return RANK_ORDER.index(r)
+
+def is_flush(cards):
+    return len(set(c[-1] for c in cards)) == 1
+
+def is_straight(cards):
+    vals = sorted(set(cv(c) for c in cards))
+    return len(vals) == 5 and max(vals) - min(vals) == 4
+
+def hand_rank(cards):
+    ranks = [c[:-1] for c in cards]
+    cnt = {r: ranks.count(r) for r in ranks}
+    v = sorted(cnt.values(), reverse=True)
+
+    if is_straight(cards) and is_flush(cards): return "Straight Flush"
+    if 4 in v: return "Four of a Kind"
+    if 3 in v and 2 in v: return "Full House"
+    if is_flush(cards): return "Flush"
+    if is_straight(cards): return "Straight"
+    if 3 in v: return "Three of a Kind"
+    if v.count(2) == 2: return "Two Pair"
+    if 2 in v: return "One Pair"
+    return "High Card"
+
+class PokerListener(Node):
+    def __init__(self):
+        super().__init__("poker_listener")
+        self.create_subscription(String, "/poker_table", self.callback, 10)
+
+    def callback(self, msg):
+        data = json.loads(msg.data)
+        hole = data["hole"]
+        community = data["community"]
+        best = "High Card"
+
+        for comb in combinations(hole + community, 5):
+            h = hand_rank(list(comb))
+            order = [
+                "High Card","One Pair","Two Pair","Three of a Kind","Straight",
+                "Flush","Full House","Four of a Kind","Straight Flush"
+            ]
+            if order.index(h) > order.index(best):
+                best = h
+
+        print("\n=== Texas Hold'em ===")
+        print("Hole Cards   :", " ".join(hole))
+        print("Community    :", " ".join(community))
+        print("Best Hand    :", best)
+
+def main():
+    rclpy.init()
+    node = PokerListener()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+
