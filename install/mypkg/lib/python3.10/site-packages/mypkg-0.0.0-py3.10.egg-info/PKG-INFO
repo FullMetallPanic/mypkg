@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: mypkg
+Version: 0.0.0
+Summary: テキサスホールデム役判定装置
+Home-page: UNKNOWN
+Maintainer: arute
+Maintainer-email: x78618741@gmail.com
+License: BSD-3-Clause
+Platform: UNKNOWN
+Provides-Extra: test
+License-File: LICENSE
+
+UNKNOWN
+
