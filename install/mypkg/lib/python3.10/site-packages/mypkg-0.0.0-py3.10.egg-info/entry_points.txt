@@ -1,4 +1,0 @@
-[console_scripts]
-dealer = mypkg.dealer:main
-listener = mypkg.listener:main
-
