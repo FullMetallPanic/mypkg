@@ -17,8 +17,8 @@ setup(
     zip_safe=True,
     maintainer='arute',
     maintainer_email='x78618741@gmail.com',
-    description='TODO: ロボットシステム学で頑張るや～つ',
-    license='TODO: BSD-3-Clause',
+    description='テキサスホールデム役判定装置',
+    license='BSD-3-Clause',
     extras_require={
         'test': [
             'pytest',
@@ -26,7 +26,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'talker = mypkg.talker:main',
+            'dealer = mypkg.dealer:main',
             'listener = mypkg.listener:main',
         ],
     },
