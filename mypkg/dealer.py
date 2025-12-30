@@ -18,11 +18,13 @@ class PokerDealer(Node):
             10
         )
 
-        self.timer = self.create_timer(2.0, self.deal_cards)
+        self.timer = self.create_timer(1.0, self.deal_cards)
+        self.deal_cards()
+
 
     def deal_cards(self):
-        suits = ["S","H","D","C"]
-        ranks = ["A","K","Q","J","10","9","8","7","6","5","4","3","2"]
+        suits = ["S", "H", "D", "C"]
+        ranks = ["A", "K", "Q", "J", "10", "9", "8", "7", "6", "5", "4", "3", "2"]
         deck = [r+s for s in suits for r in ranks]
         random.shuffle(deck)
 
@@ -31,7 +33,7 @@ class PokerDealer(Node):
 
         data = {
             "hole": hole,
-            "community": community
+                "community": community
         }
 
         msg = json.dumps(data)
@@ -42,6 +44,7 @@ class PokerDealer(Node):
         ros_msg.data = msg
         self.publisher.publish(ros_msg)
 
+
 def main():
     rclpy.init()
     node = PokerDealer()
@@ -50,4 +53,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
