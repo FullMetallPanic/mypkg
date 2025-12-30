@@ -20,19 +20,22 @@ fi
 cd "$WS_DIR"
 
 
-timeout 10 ros2 run mypkg poker_dealer > /tmp/dealer.log 2> /tmp/dealer.err &
+ros2 run mypkg dealer > /tmp/dealer.log 2> /tmp/dealer.err &
 DEALER_PID=$!
-timeout 10 ros2 run mypkg poker_judge > /tmp/judge.log 2> /tmp/judge.err &
+ros2 run mypkg judge > /tmp/judge.log 2> /tmp/judge.err &
 JUDGE_PID=$!
+
 
 sleep 3
 
 
-ros2 topic echo --once /poker_table > /tmp/poker_table.log || RESULT=1
-ros2 topic echo --once /poker_result > /tmp/poker_result.log || RESULT
+ros2 topic echo --once /poker_table > /tmp/poker_table.log 2>/tmp/poker_table.err || RESULT=1
+ros2 topic echo --once /poker_result > /tmp/poker_result.log 2>/tmp/poker_result.err || RESULT=1
 
 
 kill $DEALER_PID || true
+wait $DEALER_PID 2>/dev/null || true
 kill $JUDGE_PID  || true
+wait $JUDGE_PID 2>/dev/null || true
 
 exit $RESULT
