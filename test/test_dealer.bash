@@ -4,7 +4,6 @@
 
 set -e
 
-RESULT=0
 WS_DIR="$1"
 [ "$WS_DIR" == "" ] && WS_DIR=~/ros2_ws
 
@@ -23,18 +22,17 @@ cd "$WS_DIR"
 ros2 run mypkg dealer > /tmp/dealer.log 2> /tmp/dealer.err &
 DEALER_PID=$!
 
+
 sleep 3
 
 
 if ! ros2 topic echo --once /poker_table > /tmp/poker_table.log 2>/tmp/poker_table.err; then
     echo "WARNING: /poker_table not published"
-    RESULT=1
+    kill $DEALER_PID || true
+    wait $DEALER_PID 2>/dev/null || true
+    exit 1
 fi
 
 
-if ps -p $DEALER_PID > /dev/null 2>&1; then
-    kill $DEALER_PID
-fi
+kill $DEALER_PID || true
 wait $DEALER_PID 2>/dev/null || true
-
-exit $RESULT
