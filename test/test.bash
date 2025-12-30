@@ -1,46 +1,44 @@
-#!/usr/bin/env python3
+#!/bin/bash
 # SPDX-FileCopyrightText: 2025 Hayato Matsumoto
 # SPDX-License-Identifier: BSD-3-Clause
 
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import String
+set -e
+RESULT=0
+
+WS_DIR=~/ros2_ws
+[ "$1" != "" ] && WS_DIR="$1"
+
+cd "$WS_DIR"
+source install/setup.bash
+
+
+timeout 10 ros2 run mypkg poker_dealer > /tmp/dealer.log 2> /tmp/dealer.err &
+DEALER_PID=$!
+
+
+sleep 2
+ros2 topic echo --once /poker_table > /tmp/poker_table.log || RESULT=1
+
+
+kill $DEALER_PID
+sleep 1
+
+
+grep -q '"hole": \[' /tmp/poker_table.log || RESULT=1
+grep -q '"community": \[' /tmp/poker_table.log || RESULT=1
+
+
+python3 - <<EOF || RESULT=1
 import json
-import time
-from mypkg.dealer import PokerDealer
-
-
-def test_dealer_publishes():
-    rclpy.init()
-
-    dealer = PokerDealer()
-    node = Node("test_node")
-
-    received = []
-
-    def callback(msg):
-        received.append(msg.data)
-
-    node.create_subscription(
-        String,
-        "/poker_table",
-        callback,
-        10
-    )
-
-    start = time.time()
-    while len(received) == 0 and time.time() - start < 6:
-        rclpy.spin_once(node, timeout_sec=0.2)
-        rclpy.spin_once(dealer, timeout_sec=0.2)
-
-    dealer.destroy_node()
-    node.destroy_node()
-    rclpy.shutdown()
-
-    assert len(received) > 0
-
-    data = json.loads(received[0])
-    assert "hole" in data
-    assert "community" in data
+with open("/tmp/poker_table.log") as f:
+    data = json.load(f)
+    assert "hole" in data and "community" in data
     assert len(data["hole"]) == 2
     assert len(data["community"]) == 5
+EOF
+
+
+grep -q 'Deal:' /tmp/dealer.log || RESULT=1
+
+
+exit $RESULT
