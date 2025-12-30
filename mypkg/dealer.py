@@ -4,7 +4,7 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String   # ★ 追加
+from std_msgs.msg import String
 import random
 import json
 
@@ -12,7 +12,6 @@ class PokerDealer(Node):
     def __init__(self):
         super().__init__("poker_dealer")
 
-        # ★ 正しい publisher の書き方
         self.publisher = self.create_publisher(
             String,
             "/poker_table",
@@ -39,7 +38,6 @@ class PokerDealer(Node):
 
         self.get_logger().info(f"Dealt: {msg}")
 
-        # ★ String メッセージに入れて publish
         ros_msg = String()
         ros_msg.data = msg
         self.publisher.publish(ros_msg)
