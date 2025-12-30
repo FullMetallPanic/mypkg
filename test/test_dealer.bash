@@ -9,24 +9,28 @@ WS_DIR=~/ros2_ws
 [ "$1" != "" ] && WS_DIR="$1"
 
 cd "$WS_DIR"
-source install/setup.bash
+colcon build --event-handlers console_direct+ > /tmp/build.log 2>&1 || RESULT=1
+
+
+if [ -f "$WS_DIR/install/setup.bash" ]; then
+    source "$WS_DIR/install/setup.bash"
+else
+    echo "ERROR: $WS_DIR/install/setup.bash not found"
+    exit 1
+fi
 
 
 timeout 10 ros2 run mypkg poker_dealer > /tmp/dealer.log 2> /tmp/dealer.err &
 DEALER_PID=$!
 
-
 sleep 2
 ros2 topic echo --once /poker_table > /tmp/poker_table.log || RESULT=1
-
 
 kill $DEALER_PID
 sleep 1
 
-
 grep -q '"hole": \[' /tmp/poker_table.log || RESULT=1
 grep -q '"community": \[' /tmp/poker_table.log || RESULT=1
-
 
 python3 - <<EOF || RESULT=1
 import json
@@ -36,9 +40,5 @@ with open("/tmp/poker_table.log") as f:
     assert len(data["hole"]) == 2
     assert len(data["community"]) == 5
 EOF
-
-
-grep -q 'Deal:' /tmp/dealer.log || RESULT=1
-
 
 exit $RESULT

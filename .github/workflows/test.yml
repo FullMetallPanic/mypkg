@@ -1,13 +1,37 @@
 name: test
 on: push
+
 jobs:
   test:
     runs-on: ubuntu-22.04
     container: ryuichiueda/ubuntu22.04-ros2:latest
     steps:
-      - uses: actions/checkout@v2
-      - name: build and test
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-requests python3-pytest python3-pytest-cov python3-flake8 python3-pydocstyle
+
+      - name: Setup ROS2 Humble
+        run: |
+          source /opt/ros/humble/setup.bash
+
+      - name: Copy code to workspace
+        run: |
+          mkdir -p /root/ros2_ws/src
           rsync -av ./ /root/ros2_ws/src/mypkg/
+
+      - name: Build workspace
+        run: |
           cd /root/ros2_ws
-          bash -xv ./src/mypkg/test/test.bash /root
+          colcon build --event-handlers console_direct+
+
+      - name: Source workspace
+        run: |
+          source /root/ros2_ws/install/setup.bash
+
+      - name: Run tests
+        run: |
+          bash -xv /root/ros2_ws/src/mypkg/test/test_dealer.bash /root/ros2_ws
+          bash -xv /root/ros2_ws/src/mypkg/test/test_judge.bash /root/ros2_ws
