@@ -4,17 +4,21 @@
 
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import String   # ★ 追加
 import random
 import json
 
 class PokerDealer(Node):
     def __init__(self):
         super().__init__("poker_dealer")
+
+        # ★ 正しい publisher の書き方
         self.publisher = self.create_publisher(
-            msg_type=rclpy.qos.qos_profile_system_default.type, 
-            topic="/poker_table",
-            qos_profile=10
+            String,
+            "/poker_table",
+            10
         )
+
         self.timer = self.create_timer(2.0, self.deal_cards)
 
     def deal_cards(self):
@@ -32,8 +36,13 @@ class PokerDealer(Node):
         }
 
         msg = json.dumps(data)
+
         self.get_logger().info(f"Dealt: {msg}")
-        self.publisher.publish(msg)
+
+        # ★ String メッセージに入れて publish
+        ros_msg = String()
+        ros_msg.data = msg
+        self.publisher.publish(ros_msg)
 
 def main():
     rclpy.init()

@@ -1,48 +1,44 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2025 Hayato Matsumoto
 # SPDX-License-Identifier: BSD-3-Clause
-def evaluate_best_hand(cards7):
-    from itertools import combinations
+from mypkg.holdem_judge import evaluate_best_hand
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+import json
 
-    RANK_ORDER = "23456789TJQKA"
+class PokerJudge(Node):
+    def __init__(self):
+        super().__init__("poker_judge")
+        self.sub = self.create_subscription(String, "/poker_table", self.callback, 10)
+        self.pub = self.create_publisher(String, "/poker_result", 10)
+        self.get_logger().info("Poker Judge Started")
 
-    def rv(card):
-        r = card[:-1]
-        if r == "10":
-            r = "T"
-        return RANK_ORDER.index(r)
+    def callback(self, msg):
+        data = json.loads(msg.data)
+        hole = data["hole"]
+        community = data["community"]
 
-    def is_flush(cards):
-        return len(set(c[-1] for c in cards)) == 1
+        best = evaluate_best_hand(hole + community)
 
-    def is_straight(cards):
-        vals = sorted(set(rv(c) for c in cards))
-        return len(vals) == 5 and max(vals) - min(vals) == 4
+        out = {
+            "hole": hole,
+            "community": community,
+            "result": best
+        }
 
-    def hand_rank(cards):
-        ranks = [c[:-1] for c in cards]
-        cnt = {r: ranks.count(r) for r in ranks}
-        v = sorted(cnt.values(), reverse=True)
+        rosmsg = String()
+        rosmsg.data = json.dumps(out)
 
-        if is_straight(cards) and is_flush(cards): return "Straight Flush"
-        if 4 in v: return "Four of a Kind"
-        if 3 in v and 2 in v: return "Full House"
-        if is_flush(cards): return "Flush"
-        if is_straight(cards): return "Straight"
-        if 3 in v: return "Three of a Kind"
-        if v.count(2) == 2: return "Two Pair"
-        if 2 in v: return "One Pair"
-        return "High Card"
+        self.pub.publish(rosmsg)
+        self.get_logger().info(f"Judged: {rosmsg.data}")
 
-    order = [
-        "High Card","One Pair","Two Pair","Three of a Kind","Straight",
-        "Flush","Full House","Four of a Kind","Straight Flush"
-    ]
+def main():
+    rclpy.init()
+    node = PokerJudge()
+    rclpy.spin(node)
+    rclpy.shutdown()
 
-    best = "High Card"
-    for comb in combinations(cards7, 5):
-        h = hand_rank(list(comb))
-        if order.index(h) > order.index(best):
-            best = h
-    return best
+if __name__ == "__main__":
+    main()
 

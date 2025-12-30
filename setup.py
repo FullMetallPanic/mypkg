@@ -28,6 +28,7 @@ setup(
         'console_scripts': [
             'dealer = mypkg.dealer:main',
             'listener = mypkg.listener:main',
+            'judge = mypkg.judge:main',
         ],
     },
 )
