@@ -1,4 +1,5 @@
-name: test
+name: ROS2 Test
+
 on: push
 
 jobs:
@@ -13,21 +14,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-requests python3-pytest python3-pytest-cov python3-flake8 python3-pydocstyle
 
-      - name: Copy code to workspace
+      - name: Build and test ROS2 workspace
+        shell: bash
         run: |
+          source /opt/ros/humble/setup.bash
+
           mkdir -p /root/ros2_ws/src
           rsync -av ./ /root/ros2_ws/src/mypkg/
 
-      - name: Build workspace
-        run: |
           cd /root/ros2_ws
-          source /opt/ros/humble/setup.bash
           colcon build --event-handlers console_direct+
 
-      - name: Run dealer test
-        run: |
-          bash -xv /root/ros2_ws/src/mypkg/test/test_dealer.bash /root/ros2_ws
-
-      - name: Run judge test
-        run: |
-          bash -xv /root/ros2_ws/src/mypkg/test/test_judge.bash /root/ros2_ws
+          source install/setup.bash
+          
+          bash ./src/mypkg/test/test_dealer.bash /root/ros2_ws
+          
+          bash ./src/mypkg/test/test_judge.bash /root/ros2_ws
