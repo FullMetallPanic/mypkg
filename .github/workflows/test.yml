@@ -34,4 +34,9 @@ jobs:
         run: |
           colcon test
           colcon test-result --verbose
-
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: /root/ros2_ws/build/mypkg/test_results
