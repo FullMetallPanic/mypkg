@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2025 Hayato Matsumoto
 # SPDX-License-Identifier: BSD-3-Clause
+
 from mypkg.holdem_judge import evaluate_best_hand
 
 

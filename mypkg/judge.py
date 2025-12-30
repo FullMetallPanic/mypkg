@@ -17,7 +17,6 @@ class PokerJudge(Node):
         self.pub = self.create_publisher(String, "/poker_result", 10)
         self.get_logger().info("Poker Judge Started")
 
-
     def callback(self, msg):
         data = json.loads(msg.data)
         hole = data["hole"]

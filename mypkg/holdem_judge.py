@@ -4,7 +4,9 @@
 
 from itertools import combinations
 
+
 RANK_ORDER = "23456789TJQKA"
+
 
 def cv(card):
     r = card[:-1]
@@ -23,6 +25,7 @@ def is_straight(cards):
     if len(vals) == 5 and max(vals) - min(vals) == 4:
         return True
 
+    # Wheel Straight (A 2 3 4 5)
     if set(vals) == {12, 0, 1, 2, 3}:
         return True
 
@@ -51,6 +54,7 @@ def hand_rank(cards):
     if 2 in v:
         return "One Pair"
     return "High Card"
+
 
 ORDER = [
     "High Card",

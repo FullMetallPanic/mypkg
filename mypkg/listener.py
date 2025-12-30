@@ -76,7 +76,6 @@ class PokerListener(Node):
             "Straight Flush"
         ]
 
-
     def callback(self, msg):
         data = json.loads(msg.data)
         hole = data["hole"]

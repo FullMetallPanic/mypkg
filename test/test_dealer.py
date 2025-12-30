@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2025 Hayato Matsumoto
 # SPDX-License-Identifier: BSD-3-Clause
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 import json
 import time
+from mypkg.dealer import PokerDealer
 
 
 def test_dealer_publishes():
     rclpy.init()
+
+    dealer = PokerDealer()
     node = Node("test_node")
 
     received = []
 
-   
-   def callback(msg):
+    def callback(msg):
         received.append(msg.data)
 
     node.create_subscription(
@@ -28,7 +31,9 @@ def test_dealer_publishes():
     start = time.time()
     while len(received) == 0 and time.time() - start < 6:
         rclpy.spin_once(node, timeout_sec=0.2)
+        rclpy.spin_once(dealer, timeout_sec=0.2)
 
+    dealer.destroy_node()
     node.destroy_node()
     rclpy.shutdown()
 

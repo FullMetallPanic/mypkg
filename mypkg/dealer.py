@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2025 Hayato Matsumoto
 # SPDX-License-Identifier: BSD-3-Clause
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
@@ -11,15 +12,10 @@ import random
 class PokerDealer(Node):
     def __init__(self):
         super().__init__("poker_dealer")
-
         self.publisher = self.create_publisher(String, "/poker_table", 10)
-
         self.timer = self.create_timer(0.5, self.deal_cards)
-
         self.get_logger().info("Poker Dealer Started")
-
         self.deal_cards()
-
 
     def deal_cards(self):
         deck = [r + s for r in "23456789TJQKA" for s in "SHDC"]
