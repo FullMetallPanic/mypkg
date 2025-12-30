@@ -26,6 +26,12 @@ ROS2 ノードとして以下の機能を提供します：
 - サブスクライブトピック: `/poker_table`
 - パブリッシュトピック: `/poker_result`
 
+### holdem_judge
+- 役割: `/poker_table` を受信して役を判定し、`/poker_result` に配信
+- ノード名: `holdem_judge`
+- サブスクライブするトピック: `/poker_table`
+- パブリッシュするトピック: `/poker_result
+
 ### listener
 - 役割: `/poker_table` と `/poker_result` の情報を受信してコンソールに表示
 - ノード名: `poker_listener`
@@ -43,4 +49,39 @@ ROS2 ノードとして以下の機能を提供します：
 ### listener.py
 - トピック受信して表示
 
+---
 
+## トピックの仕様
+
+| トピック名       | 型                     | 内容                                     |
+|------------------|------------------------|----------------------------------------|
+| `/poker_table`    | `std_msgs/String`      | 手札とコミュニティカードを JSON 形式で配信 |
+| `/poker_result`   | `std_msgs/String`      | 判定結果を JSON 形式で配信             |
+
+---
+
+## 実行方法
+ディーラー＋ジャッジをまとめて実行
+```
+$ ros2 launch mypkg talk_listen.launch.py
+```
+
+個別ノード実行
+- 別端末で起動
+```
+$ ros2 run mypkg dealer
+$ ros2 run mypkg judge
+```
+
+## テスト環境
+- Ubuntu 22.04 LTS
+- Python 3.10
+- ROS 2 Humble Hawksbill
+
+## 謝辞
+
+## ライセンス
+このソフトウェアパッケージは，3条項BSDライセンスの下，再頒布および使用が許可されます。
+
+## 著作権
+@ 2025 Hayato Matsumoto
