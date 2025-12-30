@@ -7,16 +7,18 @@ from std_msgs.msg import String
 import json
 import time
 
+
 def test_dealer_publishes():
     rclpy.init()
     node = Node("test_node")
 
     received = []
 
-    def callback(msg):
+   
+   def callback(msg):
         received.append(msg.data)
 
-    sub = node.create_subscription(
+    node.create_subscription(
         String,
         "/poker_table",
         callback,
@@ -37,4 +39,3 @@ def test_dealer_publishes():
     assert "community" in data
     assert len(data["hole"]) == 2
     assert len(data["community"]) == 5
-
