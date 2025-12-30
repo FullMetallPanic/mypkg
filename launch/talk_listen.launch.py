@@ -1,22 +1,31 @@
 import launch
 import launch.actions
-import launch.substitutions
 import launch_ros.actions
-
 
 def generate_launch_description():
 
-    talker = launch_ros.actions.Node(
+    dealer_node = launch_ros.actions.Node(
         package='mypkg',
-        executable='talker',)
+        executable='dealer',  
+        output='screen',
+    )
 
-    listener = launch_ros.actions.Node(
+    
+    judge_node = launch_ros.actions.Node(
+        package='mypkg',
+        executable='judge',  
+        output='screen',
+    )
+
+
+    listener_node = launch_ros.actions.Node(
         package='mypkg',
         executable='listener',
         output='screen',
     )
 
     return launch.LaunchDescription([
-        talker,
-        listener
+        dealer_node,
+        judge_node,
+        listener_node,
     ])
