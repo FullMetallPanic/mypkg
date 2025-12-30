@@ -12,36 +12,22 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-requests python3-pytest python3-pytest-cov python3-flake8 python3-pydocstyle
-        shell: bash
-
-      - name: Setup ROS2 Humble
-        run: |
-          source /opt/ros/humble/setup.bash
-        shell: bash
 
       - name: Copy code to workspace
         run: |
           mkdir -p /root/ros2_ws/src
           rsync -av ./ /root/ros2_ws/src/mypkg/
-        shell: bash
 
       - name: Build workspace
         run: |
           cd /root/ros2_ws
+          source /opt/ros/humble/setup.bash
           colcon build --event-handlers console_direct+
-        shell: bash
 
-      - name: Source workspace
-        run: |
-          source /root/ros2_ws/install/setup.bash
-        shell: bash
-
-      - name: Run Dealer test
+      - name: Run dealer test
         run: |
           bash -xv /root/ros2_ws/src/mypkg/test/test_dealer.bash /root/ros2_ws
-        shell: bash
 
-      - name: Run Judge test
+      - name: Run judge test
         run: |
           bash -xv /root/ros2_ws/src/mypkg/test/test_judge.bash /root/ros2_ws
-        shell: bash
