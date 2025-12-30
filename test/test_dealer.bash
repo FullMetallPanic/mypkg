@@ -4,31 +4,20 @@
 
 set -e
 
-RESULT=0
-WS_DIR="$1"
-[ "$WS_DIR" == "" ] && WS_DIR=~/ros2_ws
-
-
-source /opt/ros/humble/setup.bash
-if [ -f "$WS_DIR/install/setup.bash" ]; then
-    source "$WS_DIR/install/setup.bash"
-else
-    echo "ERROR: $WS_DIR/install/setup.bash not found"
-    exit 1
-fi
+WS_DIR=${1:-$HOME/ros2_ws}
 
 cd "$WS_DIR"
+colcon build --event-handlers console_direct+
 
+source install/setup.bash
 
-timeout 10 ros2 run mypkg poker_dealer > /tmp/dealer.log 2> /tmp/dealer.err &
+timeout 10 ros2 run mypkg poker_dealer &
 DEALER_PID=$!
 
 sleep 2
 
+timeout 10 bash -c "source install/setup.bash && ros2 topic echo --once /poker_table"
 
-ros2 topic echo --once /poker_table > /tmp/poker_table.log || RESULT=1
-
-
-kill $DEALER_PID || true
-
-exit $RESULT
+if ps -p $DEALER_PID > /dev/null 2>&1; then
+    kill $DEALER_PID
+fi
