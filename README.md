@@ -26,16 +26,11 @@ ROS2 ノードとして以下の機能を提供します：
 - サブスクライブトピック: `/poker_table`
 - パブリッシュトピック: `/poker_result`
 
-### holdem_judge
-- 役割: `/poker_table` を受信して役を判定し、`/poker_result` に配信
-- ノード名: `holdem_judge`
-- サブスクライブするトピック: `/poker_table`
-- パブリッシュするトピック: `/poker_result`
-
 ### listener
 - 役割: `/poker_table` と `/poker_result` の情報を受信してコンソールに表示
 - ノード名: `poker_listener`
 - サブスクライブするトピック: `/poker_table`, `/poker_result`
+
 ---
 
 ## Python モジュールの説明
