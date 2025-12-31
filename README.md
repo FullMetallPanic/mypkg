@@ -82,5 +82,5 @@ $ ros2 run mypkg judge
 - [Python Algorithm to Determine Winner in Texas Hold’em](https://stackoverflow.com/questions/5293405/algorithm-to-determine-the-winner-of-a-texas-holdem-hand)
 
 ## ライセンス
-このソフトウェアパッケージは，3条項BSDライセンスの下，再頒布および使用が許可されます。
-@ 2025 Hayato Matsumoto
+- このソフトウェアパッケージは，3条項BSDライセンスの下，再頒布および使用が許可されます。
+- @ 2025 Hayato Matsumoto
