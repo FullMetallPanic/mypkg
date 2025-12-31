@@ -83,6 +83,4 @@ $ ros2 run mypkg judge
 
 ## ライセンス
 このソフトウェアパッケージは，3条項BSDライセンスの下，再頒布および使用が許可されます。
-
-## 著作権
 @ 2025 Hayato Matsumoto
