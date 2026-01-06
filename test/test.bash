@@ -11,6 +11,6 @@ cd "$ws" || exit 1
 colcon build
 source install/setup.bash
 
-timeout 10 ros2 launch mypkg talk_listen.launch.py > /tmp/mypkg.log
+timeout 10 ros2 launch mypkg talk_listen.launch.py > /tmp/mypkg.log || true
 
 cat /tmp/mypkg.log | grep "Poker Listener Started"
