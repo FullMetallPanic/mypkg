@@ -4,6 +4,8 @@ set -e
 ws=~
 [ "$1" != "" ] && ws="$1"
 
+source /opt/ros/humble/setup.bash
+
 cd "$ws" || exit 1
 
 colcon build
