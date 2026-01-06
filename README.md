@@ -41,7 +41,7 @@
 
 ## Python モジュールの説明
 
-###holdem_judge.py
+### holdem_judge.py
 - 役割: テキサスホールデムの役判定アルゴリズムのみを実装した Python モジュール
 - ROS 2 依存性: なし
 - 利用方法: dealer や judge ノードから import して使用可能であり、単体テストや他アプリケーションへの再利用が可能
