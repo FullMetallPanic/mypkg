@@ -1,4 +1,5 @@
-name: test
+name: ROS2 listener test
+
 on: push
 
 jobs:
@@ -9,24 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: build and test
+      - name: Build ROS2 workspace
         shell: bash
         run: |
           set -e
-
-          
           source /opt/ros/humble/setup.bash
 
-          
           mkdir -p /root/ros2_ws/src
           rsync -av ./ /root/ros2_ws/src/mypkg/
 
-          
           cd /root/ros2_ws
           colcon build
 
-          
-          source install/setup.bash
-
-          
-          bash -xv src/mypkg/test/test.bash /root/ros2_ws
+      - name: Run listener test
+        shell: bash
+        run: |
+          chmod +x /root/ros2_ws/src/mypkg/test/test.bash
+          /root/ros2_ws/src/mypkg/test/test.bash /root/ros2_ws

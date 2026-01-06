@@ -1,16 +1,14 @@
 #!/bin/bash
+set -e
 
-dir=~
-[ "$1" != "" ] && dir="$1"
+ws=~
+[ "$1" != "" ] && ws="$1"
 
-cd "$dir/ros2_ws" || exit 1
+cd "$ws" || exit 1
 
 colcon build
-source "$dir/.bashrc"
+source install/setup.bash
 
+timeout 10 ros2 launch mypkg talk_listen.launch.py > /tmp/mypkg.log
 
-timeout 10 ros2 launch mypkg talk_listen.launch.py \
-  > /tmp/mypkg.log 2>&1
-
-
-cat /tmp/mypkg.log | grep "Texas Hold'em Result"
+cat /tmp/mypkg.log | grep "Poker Listener Started"
