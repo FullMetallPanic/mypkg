@@ -2,11 +2,16 @@
 
 [![test](https://github.com/FullMetallPanic/mypkg/actions/workflows/test.yml/badge.svg)](https://github.com/FullMetallPanic/mypkg/actions/workflows/test.yml)
 
-Texas Hold’em ポーカーの配牌／判定を行う ROS2 パッケージです。  
-ROS2 ノードとして以下の機能を提供します：
+本パッケージは、ディーラー・判定・表示を
+それぞれ独立した ROS 2 ノードとして提供します。
 
-- `/poker_table`：ディーラーが配ったカード情報を公開
-- `/poker_result`：ジャッジが役判定結果を公開
+各ノードはトピック通信により疎結合に設計されており、
+必要なノードのみを選択して利用することが可能です。
+
+例えば、
+- dealer ノードのみを用いてカード配布のシミュレーションを行う
+- judge ノードのみを用いて外部から受信したカード情報を評価する
+といった使い方ができます。
 
 
 ---
@@ -35,14 +40,10 @@ ROS2 ノードとして以下の機能を提供します：
 
 ## Python モジュールの説明
 
-### dealer.py
-- ディーラー処理とトピック配信
+### holdem_judge.py
+役判定アルゴリズムのみを実装した純粋な Python モジュール。
+ROS 2 には依存せず、テストコードや他ノードから再利用可能である。
 
-### judge.py 
-- 役判定処理とトピック配信
-
-### listener.py
-- トピック受信して表示
 
 ---
 
@@ -62,10 +63,15 @@ $ ros2 launch mypkg talk_listen.launch.py
 ```
 
 個別ノード実行
-- 別端末で起動
+- 別端末で起動して確認
 ```
 $ ros2 run mypkg dealer
+```
+```
 $ ros2 run mypkg judge
+```
+```
+ros2 run mypkg listener
 ```
 
 ## テスト環境
