@@ -72,7 +72,7 @@ $ ros2 run mypkg dealer
 $ ros2 run mypkg judge
 ```
 ```
-ros2 run mypkg listener
+$ ros2 run mypkg listener
 ```
 
 ## テスト環境
