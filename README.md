@@ -2,19 +2,6 @@
 
 [![test](https://github.com/FullMetallPanic/mypkg/actions/workflows/test.yml/badge.svg)](https://github.com/FullMetallPanic/mypkg/actions/workflows/test.yml)
 
-本パッケージは、ディーラー・判定・表示を
-それぞれ独立した ROS 2 ノードとして提供します。
-
-各ノードはトピック通信により疎結合に設計されており、
-必要なノードのみを選択して利用することが可能です。
-
-例えば、
-- dealer ノードのみを用いてカード配布のシミュレーションを行う
-- judge ノードのみを用いて外部から受信したカード情報を評価する
-
-といった使い方ができます。
-
-
 ---
 
 ## ノードの説明
@@ -39,15 +26,6 @@
 
 ---
 
-## Python モジュールの説明
-
-### holdem_judge.py
-- 役割: テキサスホールデムの役判定アルゴリズムのみを実装した Python モジュール
-- ROS 2 依存性: なし
-- 利用方法: dealer や judge ノードから import して使用可能であり、単体テストや他アプリケーションへの再利用が可能
-
----
-
 ## トピックの仕様
 
 | トピック名       | 型                     | 内容                                     |
@@ -61,19 +39,38 @@
 ディーラー＋ジャッジをまとめて実行
 ```
 $ ros2 launch mypkg talk_listen.launch.py
+[dealer-1] [INFO] [1767760898.296583183] [poker_dealer]: Poker Dealer Started
+[dealer-1] [INFO] [1767760898.297576598] [poker_dealer]: Deal: {"hole": ["3C", "TD"], "community": ["7D", "KD", "2D", "5D", "8H"]}
+[listener-3] [INFO] [1767760898.299860827] [poker_listener]: Poker Listener Started
+[listener-3] [INFO] [1767760898.301207145] [poker_listener]:
+[listener-3] === Texas Hold'em Result ===
+[listener-3] Hole Cards   : 3C TD
+[listener-3] Community    : 7D KD 2D 5D 8H
+[listener-3] Best Hand    : Flush
 ```
 
 個別ノード実行
 - 別端末で起動して確認
 ```
 $ ros2 run mypkg dealer
+[INFO] [1767761091.692478039] [poker_dealer]: Poker Dealer Started
+[INFO] [1767761091.693720691] [poker_dealer]: Deal: {"hole": ["8S", "2C"], "community": ["JS", "TH", "9H", "KD", "QS"]}
 ```
 ```
 $ ros2 run mypkg judge
+[INFO] [1767761026.910593741] [poker_judge]: Poker Judge Started
+[INFO] [1767761091.695931376] [poker_judge]: Judged: {"hole": ["8S", "2C"], "community": ["JS", "TH", "9H", "KD", "QS"], "result": "Straight"}
 ```
 ```
 $ ros2 run mypkg listener
+[INFO] [1767761085.010743675] [poker_listener]: Poker Listener Started
+[INFO] [1767761091.694904665] [poker_listener]:
+=== Texas Hold'em Result ===
+Hole Cards   : 8S 2C
+Community    : JS TH 9H KD QS
+Best Hand    : Straight
 ```
+
 
 ## テスト環境
 - Ubuntu 22.04 LTS
