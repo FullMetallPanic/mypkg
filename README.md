@@ -2,6 +2,12 @@
 
 [![test](https://github.com/FullMetallPanic/mypkg/actions/workflows/test.yml/badge.svg)](https://github.com/FullMetallPanic/mypkg/actions/workflows/test.yml)
 
+本パッケージは、テキサスホールデムポーカーにおける配牌および役判定を行う
+ROS 2 パッケージです。
+
+ディーラー、役判定、表示をそれぞれ独立した ROS 2 ノードとして実装しており、
+トピック通信を用いてカード情報および判定結果をやり取りします。
+
 ---
 
 ## ノードの説明
@@ -11,7 +17,6 @@
 - 役割: ディーラーとして手札とテーブルカードを生成して配信
 - ノード名: `poker_dealer`
 - パブリッシュトピック: `/poker_table`
-- 更新間隔: 0.5 秒
 
 ### judge
 - 役割: 配牌を受信し、ポーカー役判定を行い `/poker_result` に配信
